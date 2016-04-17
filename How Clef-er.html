@@ -1,0 +1,327 @@
+<html>
+  <head>
+  	<style>
+  		.draggable {
+  			width:50px;
+  			height:50x;
+
+  			border-radius: 0.75em;
+  			padding: 4%;
+
+  			-webkit-transform: translate(0px, 0px);
+          	transform: translate(0px, 0px);
+		}
+		
+		#sheet{
+			width:1250px;
+		}
+		
+		hr{
+			margin-left:50px;
+			margin-right:50px;
+			margin-bottom:39px;
+		}
+		body{
+			max-height:100vh;
+		}
+  	</style>
+  	<title>How Clef-er</title>
+  </head>
+  <body onload="addImage()">
+    <div id="game"></div>
+    <script type="text/javascript" src="interact.min.js"></script>
+    <script>
+    // target elements with the "draggable" class
+    var x1;
+  	var y1;
+  	var noteArray=[];
+  	var newNotesArray=[];
+	interact('.draggable')
+  	.draggable({
+    	snap: {
+      		targets: [
+				interact.createSnapGrid({ x: 30, y: 20})
+      		],
+      		relativePoints: [ { x: 0, y: 0 } ]
+    	},
+    	inertia: false,
+    	// keep the element within the area of it's parent
+    	restrict: {
+      		restriction: {
+        		left: 50,
+        		right: 1000000,
+        		top: 0,
+        		bottom: 275,
+      		}
+    	},
+    	// enable autoScroll
+    	autoScroll: true,
+
+    	// call this function on every dragmove event
+    	onmove: dragMoveListener,
+    	// call this function on every dragend event
+    	onend: function (event) {
+      		var found=false;
+      		for(var i = 0; i < noteArray.length; i+=3){
+      			if(noteArray[i]==event.target.id){
+      				noteArray[i+1]=x1;
+      				noteArray[i+2]=y1;
+      				found=true;
+      				//alert(y1);
+      			}
+      		}
+      		if(!found){
+      			addImage();
+      			noteArray.push(event.target.id,x1,y1);
+      		}
+    	}
+  	});
+  	
+	function dragMoveListener (event) {
+    	var target = event.target,
+        // keep the dragged position in the data-x/data-y attributes
+        x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+        y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+        y1 = y;
+        x1 = x;
+
+    	// translate the element
+    	target.style.webkitTransform =
+    	target.style.transform =
+      	'translate(' + x + 'px, ' + y + 'px)';
+
+    	// update the posiion attributes
+    	target.setAttribute('data-x', x);
+    	target.setAttribute('data-y', y);
+  	}
+  	
+  	function sortNotes(){
+  		newNotesArray=[];
+  		var xvalues = [];
+  		for (var i = 1; i <= noteArray.length; i+=3){
+  			xvalues.push(noteArray[i]);
+  		}
+  		xvalues.sort(function(a, b){return a-b});
+  		for (var i = 0; i < xvalues.length; i++){
+  			//alert(xvalues[i]+"!");
+  		}
+  		for(var z=0; z<xvalues.length; z++){
+  			for (var w = 1; w < noteArray.length; w+=3){
+  				if(xvalues[z]==noteArray[w]){
+  					newNotesArray.push(noteArray[w-1]);
+  					newNotesArray.push(noteArray[w]);
+  					newNotesArray.push(noteArray[w+1]);
+  				}
+  			}
+  		}
+  	}
+  	
+  	function getNotes(){
+  		sortNotes();
+  		var notes = [];
+
+  		for (var i = 2; i <= newNotesArray.length; i+=3){
+  			if(newNotesArray[i]<=(-815)){
+  				notes.push("g5");
+  				setTimeout(function(){
+  				var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/E5-659.26.mp3";
+
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false);
+					//}, (500*((i-2)/3));
+					},  (500*((i-2)/3)));
+  			}
+  			if(newNotesArray[i]>=(-615)&&newNotesArray[i]<=(-600)){
+  				notes.push("d4");
+  				setTimeout(function(){
+  				var audio = document.createElement("audio");
+				audio.src = "http://jetcityorange.com/musical-notes/D4-293.66.mp3";
+
+				audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+				}, false); 
+				},  (500*((i-2)/3)));
+  			}
+  			
+			switch(newNotesArray[i]) {
+    			case -795:
+        			notes.push("f5");
+        			setTimeout(function(){
+        			var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/E5-659.26.mp3";
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false);
+					},  (500*((i-2)/3)));
+					break;
+    			case -775:
+        			notes.push("e5");
+        			setTimeout(function(){
+        			var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/E5-659.26.mp3";
+
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false);
+					},  (500*((i-2)/3)));
+					break;
+        		case -755:
+        			notes.push("d5");
+        			setTimeout(function(){
+        			var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/D5-587.33.mp3";
+
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false);
+					},  (500*((i-2)/3)));
+        			break;
+        		case -735:
+        			notes.push("c5");
+        			setTimeout(function(){
+        			var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/C5-523.25.mp3";
+
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false);
+					},  (500*((i-2)/3)));
+        			break;
+    			case -715:
+        			notes.push("b4");
+        			setTimeout(function(){
+        			var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/B4-493.88.mp3";
+
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false);
+					},  (500*((i-2)/3)));
+        			break;
+				case -695:
+        			notes.push("a4");
+        			setTimeout(function(){
+        			var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/A4-440.0.mp3";
+
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false)
+					},  (500*((i-2)/3)));
+        			break;
+        		case -675:
+        			notes.push("g4");
+        			setTimeout(function(){
+        			var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/G4-392.0.mp3";
+
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false)
+					},  (500*((i-2)/3)));
+        			break;
+    			case -655:
+        			notes.push("f4");
+        			setTimeout(function(){
+        			var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/F4-349.23.mp3";
+
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false)
+					},  (500*((i-2)/3)));
+        			break;
+				case -635:
+        			notes.push("e4");
+        			setTimeout(function(){
+        			var audio = document.createElement("audio");
+					audio.src = "http://jetcityorange.com/musical-notes/E4-329.63.mp3";
+
+					audio.addEventListener("canplaythrough", function () {
+					audio.play();
+        			setTimeout(function(){
+            			audio.pause();
+        			},500);
+					}, false)
+					},  (500*((i-2)/3)));
+        			break;
+    			default:
+        			break;
+			}
+      	}
+      	for (var i = 0; i < notes.length; i++){
+  			//alert(notes[i]);
+      	}
+      	
+  	}
+  	
+  	function addImage(){
+  		document.getElementById('imageDiv').insertAdjacentHTML('afterbegin', '<img style="position:absolute;" class="draggable" id="'+Math.floor((Math.random() * 1000000) + 1)+'" src="http://simpleicon.com/wp-content/uploads/music-note-1.png">');
+  	}
+    </script>
+        <br/><br/><br/><img src="http://www.soccerissue.com/wp-content/uploads/2015/06/8iGb7nqoT.png" style="position:absolute; padding:-20px; margin: -20px;left:50; top:50; height:200">
+    <hr/><hr/><hr/><hr/><hr/>
+    
+    <center><table border="0">
+    	<tr>
+    		<td>
+    			<center><h1>How Clef-er</h1></center>
+    			<center><h2><i>It only leads to treble<i></h2></center>
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+    			<button onclick="getNotes()" style="padding:20px; background:#7f0000; font-size:24px; width:100%; font-weight:bold; border-radius: 20px; color:white; border:none;">Play</button><br/><br/>
+    			<button onclick=" window.location.reload();" style="padding:20px; background:#00004c; font-size:24px; width:100%; font-weight:bold; border-radius: 20px; color:white; border:none;">Clear</button>
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+    			<center style="font-size:20px"><br/>It's time to scale back these puns...<br/> ...and write some sheet music. <br/>Drag the notes onto the staff, let go<br/> then position the note either on a line...<br/> ...or between two lines. </center>
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+    		<center><br/><i style="font-size:20px">Go ahead, grab it<br/>|<br/> \<br/>&nbsp;&nbsp;&nbsp;\</i>
+    			<span id="imageDiv" style="padding-top:0px">
+		
+  				</span></center>
+    		</td>
+    	</tr>
+    </table></center>
+	
+	
+  </body>
+</html>
